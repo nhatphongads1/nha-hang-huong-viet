@@ -130,6 +130,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 90px;text-align:center;co
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,40px);background:var(--gold);color:#0b100e;padding:10px 20px;border-radius:999px;font-weight:700;opacity:0;transition:.3s;z-index:90}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 @media(min-width:900px){.beat.b1,.beat.b2,.beat.b3,.beat.b4{top:8%}.beat h1,.beat h2{font-size:clamp(2.1rem,4.2vw,3.5rem)}}
+.stage video#hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 70%;opacity:0;transition:opacity .8s}.stage video#hv.ready{opacity:1}.stage.vid::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,16,14,.7) 0%,rgba(10,16,14,.25) 45%,rgba(10,16,14,.3) 100%);pointer-events:none}.beat,.scrollhint{z-index:2}
 .stick{position:fixed;left:16px;right:16px;bottom:14px;z-index:40;display:none}
 @media(max-width:760px){.stick{display:block}.stick .btn{width:100%;margin:0;text-align:center}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.reveal{opacity:1;transform:none}}
@@ -189,11 +190,12 @@ footer{border-top:1px solid var(--line);padding:34px 0 90px;text-align:center;co
       </g>
       <g id="beans" fill="#74b34a" stroke="#2f5a1f"></g>
     </svg>
+    <video id="hv" muted playsinline preload="auto" src="hero.mp4" aria-hidden="true"></video>
 
     <div class="beat b1 on" data-from="0" data-to=".22">
       <div class="eyebrow">Nhà Hàng Hương Việt</div>
-      <h1>Một tô nóng hổi,<br><span class="gold">trọn tình quê</span></h1>
-      <p>Nguyên liệu tươi mỗi ngày, nấu đúng vị, dọn bằng sự tận tâm. Cuộn xuống để xem tô được chan nước dùng.</p>
+      <h1>Bát bún chả nóng hổi,<br><span class="gold">trọn vị Hà Nội</span></h1>
+      <p>Nguyên liệu tươi mỗi ngày, nấu đúng vị, dọn bằng sự tận tâm. Cuộn xuống để xem nước chấm được rót vào bát.</p>
     </div>
     <div class="beat b2" data-from=".24" data-to=".5">
       <div class="eyebrow">Bước 1 · Chọn nguyên liệu</div>
@@ -201,9 +203,9 @@ footer{border-top:1px solid var(--line);padding:34px 0 90px;text-align:center;co
       <p>Mỗi ngày một mẻ nguyên liệu mới, không để qua đêm.</p>
     </div>
     <div class="beat b3" data-from=".52" data-to=".8">
-      <div class="eyebrow">Bước 2 · Nước dùng</div>
-      <h2>Nước dùng ninh lâu,<br>trong và ngọt thanh</h2>
-      <p>Hầm xương nhiều giờ để có vị ngọt tự nhiên, thơm mùi quế hồi.</p>
+      <div class="eyebrow">Bước 2 · Nước chấm</div>
+      <h2>Nước chấm chua ngọt,<br>chả nướng thơm lừng</h2>
+      <p>Chả nướng than hoa, nước chấm pha vừa miệng, ăn kèm bún và rau sống.</p>
     </div>
     <div class="beat b4" data-from=".84" data-to="1.01">
       <div class="eyebrow">Sẵn sàng dọn bàn</div>
@@ -357,6 +359,8 @@ footer{border-top:1px solid var(--line);padding:34px 0 90px;text-align:center;co
     var x=80+Math.random()*640; e.setAttribute('cx',x); e.setAttribute('cy',-30);
     beansG.appendChild(e); beans.push({el:e,x:x,d:Math.random()*.5,r:Math.random()*360});
   }
+  var hv=$('#hv'), scn=$('svg.scene'), stg=$('.stage');
+  hv.addEventListener('loadeddata',function(){ hv.dataset.ok='1'; hv.pause(); hv.classList.add('ready'); stg.classList.add('vid'); scn.style.transition='opacity .8s'; scn.style.opacity='0'; render(); });
   function render(){
     var h=story.offsetHeight-innerHeight; if(!(h>0))return;
     var p=clamp(-story.getBoundingClientRect().top/h,0,1);
@@ -380,6 +384,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 90px;text-align:center;co
       var a=parseFloat(el.dataset.from), z=parseFloat(el.dataset.to);
       el.classList.toggle('on',p>=a&&p<=z||(a===0&&p<=z));
     });
+    if(hv.dataset.ok){ var vd=hv.duration||0, vt=clamp((p-.02)/.9,0,1)*vd; if(Math.abs(hv.currentTime-vt)>.02) hv.currentTime=vt; }
     hint.style.opacity=p>.03?0:1;
   }
   /* ---------- Chung ---------- */
